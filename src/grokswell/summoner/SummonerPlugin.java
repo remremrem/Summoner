@@ -23,7 +23,7 @@ public class SummonerPlugin extends JavaPlugin implements Listener {
 			}
 			
 			Player player = (Player) sender;
-			Summon summoncommand=new Summon(args, player);
+			new Summoner().summon(args, player);
 			return true;
 		}
 		return true;
