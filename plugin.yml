@@ -1,0 +1,23 @@
+name: Summoner
+main: grokswell.summoner.SummonerPlugin
+version: 0.1-dev
+description: Summon npc mobs to assist you in battle.
+author: Grokswell
+authors: [Grokswell] 
+database: false
+depend: [Citizens]
+commands:
+   summon:
+      description: summon some freakin mobs.
+      usage: /summon monster-type monster-amount
+      permission: summoner.summon
+      permission-message: You do not have permission to use command /summon.
+      aliases: [smobs]
+permissions:
+   summoner.*:
+      description: Gives access to all outfitter commands
+      children:
+         summoner.summon: true
+   summoner.summon:
+      description: Allow use of the /summon command.
+      default: true
