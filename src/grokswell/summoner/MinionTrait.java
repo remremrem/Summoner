@@ -9,22 +9,33 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.aufdemrand.sentry.SentryInstance;
+import net.aufdemrand.sentry.SentryTrait;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.ai.speech.SimpleSpeechController;
 
 public class MinionTrait extends Trait {
 	static ArrayList<String> shoplist;
-	ArrayList<String> hire_cooldown;
+	ArrayList<String> target_list;
 	ArrayList<String> rental_cooldown;
 	final SummonerPlugin plugin;
 	
 	public DataKey trait_key;
+	
+	LivingEntity master;
 	
 	String farewellMsg;
 	String welcomeMsg;
@@ -41,9 +52,11 @@ public class MinionTrait extends Trait {
 	String location;
 	String shop_name;
 
-	public MinionTrait() {
+	public MinionTrait(LivingEntity mstr, Location location) {
 		super("summoner");
 		plugin = (SummonerPlugin) Bukkit.getServer().getPluginManager().getPlugin("Summoner");
+		
+		master = mstr;
 		
 		hire_cooldown = new ArrayList<String>();
 		rental_cooldown = new ArrayList<String>();
@@ -107,6 +120,40 @@ public class MinionTrait extends Trait {
 		
 		Player player = event.getClicker();
 	}
+	
+	@EventHandler
+	public void onDeath(net.citizensnpcs.api.event.NPCDeathEvent event) {
+		if(this.npc!=event.getNPC()) return;
+		this.npc.destroy();
+	}
+
+//  //Code to add targets to sentry validTargets list
+//	@EventHandler
+//	public void onDamage(EntityDamageByEntityEvent event) {
+//		//make sure this affects this minion or it's master
+//		Entity entto = event.getEntity();
+//		if (entto != this.npc.getEntity() && entto != (Entity) master) {
+//			return;
+//		}
+//
+//		Entity entfrom = event.getDamager();
+//		if(	entfrom  instanceof org.bukkit.entity.Projectile){
+//			entfrom = ((org.bukkit.entity.Projectile) entfrom).getShooter();
+//		}
+//		try {
+//			if (!this.npc.getTrait(SentryTrait.class).getInstance().containsTarget("PLAYER:"+((Player) entfrom).getName().toUpperCase()) ) {
+//				this.npc.getTrait(SentryTrait.class).getInstance().validTargets.add("PLAYER:"+((Player) entfrom).getName().toUpperCase());
+//			}
+//		} catch (Exception e) {
+//			try {
+//				if (!this.npc.getTrait(SentryTrait.class).getInstance().containsTarget("NPC:"+((LivingEntity) entfrom).getCustomName().toUpperCase()) ) {
+//					this.npc.getTrait(SentryTrait.class).getInstance().validTargets.add("NPC:"+((LivingEntity) entfrom).getCustomName().toUpperCase());
+//				}
+//			} catch (Exception e2){
+//				return;
+//			}
+//		}
+//	}
 
 	@Override
 	public void save(DataKey key) {
@@ -129,6 +176,20 @@ public class MinionTrait extends Trait {
 	
 	@Override
 	public void onAttach() {
+		this.npc.spawn(master.getLocation().add(master.getLocation().getDirection()).add(0,1,0));
+
+		this.npc.addTrait(SentryTrait.class);
+		this.npc.getTrait(SentryTrait.class).getInstance().validTargets.add("ENTITY:MONSTERS");
+		
+		try {
+			Player player = (Player) master;
+			this.npc.getTrait(Owner.class).setOwner(player.getName());
+			this.npc.getTrait(SentryTrait.class).getInstance().setGuardTarget(player.getName());
+		} catch (Exception e) {
+			this.npc.getTrait(Owner.class).setOwner("Server");
+			this.npc.getTrait(SentryTrait.class).getInstance().setGuardTarget(master.getCustomName());
+		}
+		return;
 	}
 
 }

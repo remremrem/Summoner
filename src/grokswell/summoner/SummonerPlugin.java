@@ -1,7 +1,5 @@
 package grokswell.summoner;
 
-
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,11 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
+
 public class SummonerPlugin extends JavaPlugin implements Listener {
-	
+	Settings settings;
+	int spawnDelay;
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,String[] args) {
-		
+		settings = new Settings(this);
+		spawnDelay = 0;
 		//REMOTEMENU 
 		if (cmd.getName().equalsIgnoreCase("summon")) {
 			if (!(sender instanceof Player)) {
@@ -23,6 +24,7 @@ public class SummonerPlugin extends JavaPlugin implements Listener {
 			}
 			
 			Player player = (Player) sender;
+
 			new Summoner().summon(args, player);
 			return true;
 		}
