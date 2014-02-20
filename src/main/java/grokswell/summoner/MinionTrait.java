@@ -58,17 +58,17 @@ public class MinionTrait extends Trait {
 		
 		master = mstr;
 		
-		hire_cooldown = new ArrayList<String>();
-		rental_cooldown = new ArrayList<String>();
-
-		farewellMsg = plugin.settings.FAREWELL;
-		welcomeMsg = plugin.settings.WELCOME;
-		denialMsg = plugin.settings.DENIAL;
-		closedMsg = plugin.settings.CLOSED;
-		forHireMsg = plugin.settings.FOR_HIRE_MSG;
-		rentalMsg = plugin.settings.RENTAL_MSG;
-		comission = plugin.settings.NPC_COMMISSION;
-		offduty = plugin.settings.OFFDUTY;
+//		hire_cooldown = new ArrayList<String>();
+//		rental_cooldown = new ArrayList<String>();
+//
+//		farewellMsg = plugin.settings.FAREWELL;
+//		welcomeMsg = plugin.settings.WELCOME;
+//		denialMsg = plugin.settings.DENIAL;
+//		closedMsg = plugin.settings.CLOSED;
+//		forHireMsg = plugin.settings.FOR_HIRE_MSG;
+//		rentalMsg = plugin.settings.RENTAL_MSG;
+//		comission = plugin.settings.NPC_COMMISSION;
+//		offduty = plugin.settings.OFFDUTY;
 		location = null;
 		forhire = false;
 		rental = false;
